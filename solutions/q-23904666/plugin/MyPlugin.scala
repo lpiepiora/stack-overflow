@@ -9,7 +9,8 @@ object MyPlugin extends Plugin {
   lazy val myPluginSettings = inConfig(Compile)(Seq(
     createClass := {
       val analysis = (compile in Compile).value
-      val loader = ClasspathUtilities.toLoader((classDirectory in Compile).value ** "*", scalaInstance.value.loader)
+      val classpath = (classDirectory in Compile).value ** "*"
+      val loader = ClasspathUtilities.makeLoader(classpath.get, scalaInstance.value)
       val myClass = Class.forName("com.stackoverflow.lpiepiora.MyClass", true, loader).newInstance
       println(myClass.asInstanceOf[{def helloWorld(): String}].helloWorld())
     }
